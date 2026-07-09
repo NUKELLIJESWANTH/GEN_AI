@@ -1,0 +1,6 @@
+{
+  "name": "GenAI Product Listing Assistant",
+  "description": "Automatically generates professional e-commerce product listings by combining real-time competitor scraping with advanced Google Gemini AI copy generation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
