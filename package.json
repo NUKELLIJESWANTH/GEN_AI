@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "streamlit run app.py --server.port 3000 --server.address 0.0.0.0",
+    "dev": "node dev.js",
     "build": "echo 'Building complete'",
-    "preview": "streamlit run app.py --server.port 3000 --server.address 0.0.0.0",
+    "preview": "node dev.js",
     "clean": "echo 'Clean complete'",
     "lint": "echo 'Lint complete'"
   },

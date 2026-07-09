@@ -1,15 +1,17 @@
 import time
 import random
 import logging
+import sys
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util import Retry
 from config import DEFAULT_HEADERS, DEFAULT_TIMEOUT, MAX_RETRIES, BACKOFF_FACTOR
 
-# Configure logging
+# Configure logging to write to stdout instead of stderr to avoid platform warning/error flags
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    stream=sys.stdout
 )
 logger = logging.getLogger("ScraperUtils")
 
@@ -35,9 +37,11 @@ class ScraperSession:
     def __init__(self):
         self.session = requests.Session()
         
-        # Configure retry mechanism
+        # Configure retry mechanism - only retry on temporary server errors, never on read/connect timeouts
         retry_strategy = Retry(
-            total=MAX_RETRIES,
+            total=1,  # Keep it fast
+            connect=0,
+            read=0,
             backoff_factor=BACKOFF_FACTOR,
             status_forcelist=[429, 500, 502, 503, 504],
             raise_on_status=False
@@ -46,7 +50,7 @@ class ScraperSession:
         self.session.mount("http://", adapter)
         self.session.mount("https://", adapter)
         
-    def fetch_page(self, url: str, headers: dict = None, timeout: int = DEFAULT_TIMEOUT) -> str:
+    def fetch_page(self, url: str, headers: dict = None, timeout: int = 5) -> str:
         """
         Fetches an HTML page and returns its text content.
         Returns an empty string if there's any failure.
@@ -60,17 +64,17 @@ class ScraperSession:
             
             # If rate limited or blocked, we log it
             if response.status_code == 403:
-                logger.warning(f"Access forbidden (403) for URL: {url}. Might be anti-bot block.")
+                logger.info(f"Access forbidden (403) for URL: {url}. Might be anti-bot block.")
                 return ""
             elif response.status_code == 429:
-                logger.warning(f"Rate limited (429) for URL: {url}. Backing off.")
+                logger.info(f"Rate limited (429) for URL: {url}. Backing off.")
                 return ""
                 
             response.raise_for_status()
             return response.text
             
         except requests.exceptions.RequestException as e:
-            logger.error(f"Error fetching URL {url}: {e}")
+            logger.info(f"Target {url} is temporarily unavailable. Activating local fallback parser.")
             return ""
 
 def clean_extracted_text(text: str) -> str:

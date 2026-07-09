@@ -111,6 +111,7 @@ with st.sidebar:
     st.image("https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&auto=format&fit=crop&q=60", use_container_width=True)
     st.title("Listing Assistant")
     st.caption("GenAI Product Listing Generation & Competitor Scraping")
+    st.caption("Created by Jeswanth N")
     st.markdown("---")
     
     st.subheader("Listing Preferences")
@@ -138,12 +139,16 @@ with st.sidebar:
                 st.rerun()
     else:
         st.write("No queries searched yet.")
+        
+    st.markdown("---")
+    st.markdown("<div style='text-align: center; color: #888888; font-size: 0.8rem;'>Made by Jeswanth N</div>", unsafe_allow_html=True)
 
 # Main Title and Overview
 st.title("🛍️ GenAI Product Listing Assistant")
 st.markdown(
     "Analyze competitor pricing, reviews, and catalog layouts across e-commerce "
-    "marketplaces to automatically generate highly optimized, premium product listings."
+    "marketplaces to automatically generate highly optimized, premium product listings. "
+    "**Created by Jeswanth N**."
 )
 
 # Search Bar Area
